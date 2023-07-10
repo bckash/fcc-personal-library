@@ -5,6 +5,7 @@
 *       
 *       
 */
+const BookModel = require("../schema").Book
 
 'use strict';
 
@@ -19,6 +20,21 @@ module.exports = function (app) {
     .post(function (req, res){
       let title = req.body.title;
       //response will contain new book object including atleast _id and title
+      let bookObj = {
+        title: title
+      }
+
+      if (title) {
+        let newbook = BookModel(bookObj)
+        newbook
+          .save()
+          .then( savedBook => res.json({
+            _id: savedBook._id,
+            title: savedBook.title
+          }))
+      } else {
+        res.send("missing required field title")
+      }
     })
     
     .delete(function(req, res){

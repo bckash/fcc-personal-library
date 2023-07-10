@@ -3,10 +3,11 @@
 const express     = require('express');
 const bodyParser  = require('body-parser');
 const cors        = require('cors');
+
 require('dotenv').config();
+require('./db-connection.js')
 
 const apiRoutes         = require('./routes/api.js');
-const dbConnection      = require('./db-connection.js')
 const fccTestingRoutes  = require('./routes/fcctesting.js');
 const runner            = require('./test-runner');
 
@@ -31,9 +32,6 @@ fccTestingRoutes(app);
 //Routing for API 
 apiRoutes(app);  
 
-//DB connection
-dbConnection(app)
-    
 //404 Not Found Middleware
 app.use(function(req, res, next) {
   res.status(404)
