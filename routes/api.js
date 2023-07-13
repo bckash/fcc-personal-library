@@ -15,6 +15,20 @@ module.exports = function (app) {
     .get(function (req, res){
       //response will be array of book objects
       //json res format: [{"_id": bookid, "title": book_title, "commentcount": num_of_comments },...]
+      BookModel
+        .find({})
+        .then( result => {
+          let bookArr = result.map( book => {
+            return {
+              title: book.title,
+              _id: book._id,
+              commentcount: book.commentcount 
+                ? book.commentcount.length 
+                : 0
+            } 
+          })
+          res.json(bookArr)
+        })
     })
     
     .post(function (req, res){
@@ -47,12 +61,26 @@ module.exports = function (app) {
     .get(function (req, res){
       let bookid = req.params.id;
       //json res format: {"_id": bookid, "title": book_title, "comments": [comment,comment,...]}
+      BookModel
+        .findById(bookid)
+        .then( result => {
+          if (result) {
+            res.json({
+              title: result.title,
+                _id: result._id,
+                comments: result.comment ? result.comment : []
+            })
+          } else {
+            res.send("no book exists")
+          }
+      })
     })
     
     .post(function(req, res){
       let bookid = req.params.id;
       let comment = req.body.comment;
       //json res format same as .get
+
     })
     
     .delete(function(req, res){
