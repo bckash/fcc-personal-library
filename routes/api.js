@@ -22,8 +22,8 @@ module.exports = function (app) {
             return {
               title: book.title,
               _id: book._id,
-              commentcount: book.commentcount 
-                ? book.commentcount.length 
+              commentcount: book.comment
+                ? book.comment.length 
                 : 0
             } 
           })
@@ -67,8 +67,8 @@ module.exports = function (app) {
           if (result) {
             res.json({
               title: result.title,
-                _id: result._id,
-                comments: result.comment ? result.comment : []
+              _id: result._id,
+              comments: result.comment ? result.comment : []
             })
           } else {
             res.send("no book exists")
@@ -80,6 +80,27 @@ module.exports = function (app) {
       let bookid = req.params.id;
       let comment = req.body.comment;
       //json res format same as .get
+      if (!comment){
+        res.send("missing required field comment")
+
+      } else {
+        BookModel
+          .findById(bookid)
+          .then(result => {
+            if (!result) {
+              res.send("no book exists")
+              
+            } else {
+              result.comment.push(comment)
+              result.save()
+              res.json({
+                title: result.title,
+                _id: result._id,
+                comments: result.comment ? result.comment : []
+              })
+            }
+          })
+      }
 
     })
     
