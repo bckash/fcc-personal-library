@@ -53,6 +53,9 @@ module.exports = function (app) {
     
     .delete(function(req, res){
       //if successful response will be 'complete delete successful'
+      BookModel
+        .deleteMany({})
+        .then( res.send("complete delete successful") )
     });
 
 
@@ -107,6 +110,16 @@ module.exports = function (app) {
     .delete(function(req, res){
       let bookid = req.params.id;
       //if successful response will be 'delete successful'
+      BookModel
+        .findById(bookid)
+        .then( result => {
+          if (!result) res.send("no book exists")
+          else {
+            BookModel
+              .deleteOne({ _id: bookid })
+              .then( res.send("delete successful") )
+          }
+        })
     });
   
 };
